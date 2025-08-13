@@ -1,0 +1,8 @@
+fastapi==0.95.2
+uvicorn[standard]==0.22.0
+langchain==0.0.299
+openai==1.0.0
+qdrant-client==1.4.0
+requests==2.31.0
+python-dotenv==1.0.0
+pytest==7.4.0
