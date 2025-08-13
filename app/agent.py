@@ -2,7 +2,7 @@ from typing import List, Dict, Any
 from .tools import Tools
 from .utils import now_iso, logger
 from .config import settings
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import time
 
 # LLM wrapper — simple OpenAI based wrapper using langchain
@@ -60,7 +60,8 @@ class SimpleAgent:
 
     def reflect(self) -> bool:
         # Check freshness: if any catalog item newer than X or if retrieved empty
-        now = datetime.utcnow()
+        # now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         freshest = None
         for item in self.retrieved:
             payload = item.get("payload") or item
@@ -76,6 +77,8 @@ class SimpleAgent:
         if freshest is None:
             self.confidence = 0.4
             return False
+        if freshest.tzinfo is None:
+            freshest = freshest.replace(tzinfo=timezone.utc)
         age = now - freshest
         if age > timedelta(days=3):
             self.confidence = 0.5
